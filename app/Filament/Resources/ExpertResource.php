@@ -16,7 +16,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\ImageColumn; // Pastikan ini di-import
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\IconColumn;
 
@@ -24,7 +24,7 @@ class ExpertResource extends Resource
 {
     protected static ?string $model = Expert::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     public static function form(Form $form): Form
     {
@@ -32,7 +32,12 @@ class ExpertResource extends Resource
             ->schema([
                 TextInput::make('name')->label('Nama')->required(),
                 TextInput::make('position')->label('Jabatan')->required(),
-                FileUpload::make('image')->label('Gambar')->image()->disk('public')->required(),
+                FileUpload::make('image')
+                    ->label('Gambar')
+                    ->image()
+                    ->disk('public')
+                    ->directory('experts')
+                    ->required(),
                 TagsInput::make('skills')->label('Keahlian (Ketik lalu tekan Enter)'),
                 Toggle::make('is_active')->label('Tampilkan Expert Ini?')->default(true),
             ]);
@@ -42,9 +47,23 @@ class ExpertResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable(),
+                TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('position')->searchable(),
-                IconColumn::make('is_active')->boolean(),
+                IconColumn::make('is_active')
+                    ->label('Aktif')
+                    ->boolean(),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
             ]);
     }
 

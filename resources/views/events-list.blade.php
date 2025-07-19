@@ -27,7 +27,7 @@
     @else
         @foreach ($events as $event)
             <div class="row g-0 align-items-center event-container mb-5">
-                <div class="col-md-5">
+                <div class="col-md-5 mt-5">
                     @if(count($event->images) > 1)
                         <div id="carousel-{{ $event->id }}" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner">

@@ -54,6 +54,7 @@ class EventResource extends Resource
                 ->maxFiles(3)        
                 ->image()            
                 ->disk('public')// Simpan di disk publik
+                ->directory('event')
                 ->required(),
 
             Toggle::make('is_active')
@@ -65,18 +66,30 @@ class EventResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                TextColumn::make('title')
-                    ->label('Nama Event')
-                    ->searchable(),
-                
-                TextColumn::make('tagline')
-                    ->label('Tagline Event'),
-                
-                IconColumn::make('is_active')
-                    ->label('Status Aktif')
-                    ->boolean(),
-            ]);
+        ->columns([
+            TextColumn::make('title')
+                ->label('Nama Event')
+                ->searchable(),
+            
+            TextColumn::make('tagline')
+                ->label('Tagline Event'),
+            
+            IconColumn::make('is_active')
+                ->label('Status Aktif')
+                ->boolean(),
+        ])
+        ->filters([
+            //
+        ])
+        ->actions([
+            Tables\Actions\EditAction::make(),
+            Tables\Actions\DeleteAction::make(),
+        ]) // <-- TAMBAHKAN BLOK INI
+        ->bulkActions([
+            Tables\Actions\BulkActionGroup::make([
+                Tables\Actions\DeleteBulkAction::make(),
+            ]),
+        ]);
     }
 
     public static function getRelations(): array
